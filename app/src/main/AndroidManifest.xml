@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".fund_detail" />
         <activity android:name=".ui.FundDetailActivity" />
-        <activity android:name=".ui.UpdateInvestment"></activity>
+        <activity android:name=".ui.UpdateInvestment" />
+        <activity android:name=".ui.AddInvestmentActivity"></activity>
     </application>
 
 </manifest>

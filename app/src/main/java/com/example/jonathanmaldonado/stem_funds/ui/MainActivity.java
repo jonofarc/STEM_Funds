@@ -1,5 +1,6 @@
 package com.example.jonathanmaldonado.stem_funds.ui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -222,5 +224,11 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new InvestmentRecyclerViewAdapter(this, (ArrayList) results);
         mRecyclerView.setAdapter(mAdapter);
     }
+
+    public void addInvestment(View view) {
+        Intent intent = new Intent(this , AddInvestmentActivity.class);
+        startActivity(intent);
+    }
+
 
 }

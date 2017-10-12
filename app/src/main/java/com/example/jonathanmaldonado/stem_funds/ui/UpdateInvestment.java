@@ -55,8 +55,8 @@ public class UpdateInvestment extends AppCompatActivity {
 
             String myJsonString="{\n" +
                     "  \"Id\": 2,\n" +
-                    "  \"InvestmentName\": \"sample string jan\",\n" +
-                    "  \"Agency\": \"sample string jonathan Agency3\",\n" +
+                    "  \"InvestmentName\": \"sample string jan new\",\n" +
+                    "  \"Agency\": \"sample string jonathan Agency new\",\n" +
                     "  \"Subagency\": \"sample string jonathan sub agency\",\n" +
                     "  \"BriefDescription\": \"sample string 5\",\n" +
                     "  \"YearEstablished\": 6,\n" +
@@ -70,8 +70,8 @@ public class UpdateInvestment extends AppCompatActivity {
 
 
             try {
-                //myPost(BASE_URL,myJsonString);
-                putRequestWithHeaderAndBody(BASE_URL+"/"+message,myJsonString);
+                myPost(BASE_URL,myJsonString);
+                //putRequestWithHeaderAndBody(BASE_URL+"/"+message,myJsonString);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -87,7 +87,7 @@ public class UpdateInvestment extends AppCompatActivity {
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, jsonBody);
 
-        OkHttpClient client = new OkHttpClient();
+
 
         Request request = new Request.Builder()
                 .url(url)
