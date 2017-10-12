@@ -4,8 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,12 +37,15 @@ public class MainActivity extends AppCompatActivity {
    public static final String BASE_URL = "http://iwg-prod-web-interview.azurewebsites.net/stem/v1/funds?";
     public int offset=0;
     public int limit =10;
-    OkHttpClient client;
-    TextView respTV;
-    SeekBar simpleSeekBar;
+    private OkHttpClient client;
+    private TextView respTV;
+    private TextView resultsNumberTV;
+    private SeekBar simpleSeekBar;
+    private EditText filterET;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private Stem[] StemResults;
 
 
 
@@ -48,10 +55,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         client = new OkHttpClient.Builder().build();
         respTV= (TextView) findViewById(R.id.resp_tv);
+        resultsNumberTV= (TextView) findViewById(R.id.tv_results_number);
         simpleSeekBar=(SeekBar)findViewById(R.id.simpleSeekBar);
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
+        filterET = (EditText) findViewById(R.id.et_filter);
 
-        setSeekerBAr();
+
+
+        setSeekerBarListener();
+        setEditTextListener();
 
        // recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
        // recyclerView.setHasFixedSize(true);
@@ -62,7 +74,29 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setSeekerBAr() {
+    private void setEditTextListener() {
+        filterET.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            public void afterTextChanged(Editable s) {
+
+                // you can call or do what you want with your EditText here
+                dataFilter();
+
+            }
+        });
+    }
+
+    private void setSeekerBarListener() {
         simpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressChangedValue = 0;
 
@@ -77,7 +111,10 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Toast.makeText(MainActivity.this, "Seek bar progress is :" + progressChangedValue,
                         Toast.LENGTH_SHORT).show();
-                limit=progressChangedValue;// we remove 1 to correctly display results
+                limit=progressChangedValue;
+                StringBuilder results= new StringBuilder();
+                results.append("Number of results: ").append(String.valueOf(limit+1));
+                resultsNumberTV.setText(results.toString());// we add 1 to correctly show results
                 connectAndGetApiData();
             }
         });
@@ -114,27 +151,15 @@ public class MainActivity extends AppCompatActivity {
 
 
                                 Gson StemGson =new GsonBuilder().create();
-                                //Stem2 StemResults = StemGson.fromJson(resp,Stem2.class);
-                                Stem[] StemResults = StemGson.fromJson(resp,Stem[].class);
-                                //channelSearchEnum[] enums = gson.fromJson(yourJson, channelSearchEnum[].class);
+                                StemResults = StemGson.fromJson(resp,Stem[].class);
 
-                                final String results=StemResults.toString();
-
-
-                                Log.d(TAG, "onResponse: 1" +StemResults);
-                                List<Stem> resultsInvestNames= new ArrayList<>();
-
-                                for (int i=0; i<StemResults.length; i++){
-                                    resultsInvestNames.add(StemResults[i]);
-                                }
-                                // used to be able to modify view
-                                final List<Stem> InvestNames= resultsInvestNames;
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         // TODO Auto-generated method stub
-                                        respTV.setText(InvestNames.toString());
-                                        ParseResults(InvestNames);
+
+                                        dataFilter();
+
                                     }
 
 
@@ -162,18 +187,37 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void ParseResults(List<Stem> list) {
-        List<String> results = new ArrayList<>();
-       // List<String> ids = new ArrayList<>();
-        for(Stem item:list){
+    public void dataFilter(){
 
-            results.add(item.getInvestmentName().toString()+"\n");
-           // ids.add(item.getId().toString());
+
+
+
+
+        Log.d(TAG, "onResponse: 1" +StemResults);
+        List<Stem> resultsInvestNames= new ArrayList<>();
+
+        for (int i=0; i<StemResults.length; i++){
+            String str1=filterET.getText().toString();
+            String str2=StemResults[i].getInvestmentName();
+
+            if(!TextUtils.isEmpty(str1)){
+                if(str2.toLowerCase().contains(str1.toLowerCase())){
+                    resultsInvestNames.add(StemResults[i]);
+                }
+            }else{
+                resultsInvestNames.add(StemResults[i]);
+            }
+
         }
-        respTV.setText(results.toString());
-        //setRecyclerView(results);
-        setRecyclerView(list);
+        // used to be able to modify view
+        final List<Stem> InvestNames= resultsInvestNames;
+
+        respTV.setText(InvestNames.toString());
+
+        setRecyclerView(InvestNames);
     }
+
+
 
     public void setRecyclerView(  List<Stem> results){
 

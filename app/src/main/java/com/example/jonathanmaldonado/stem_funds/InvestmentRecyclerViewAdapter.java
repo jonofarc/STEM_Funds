@@ -41,12 +41,6 @@ public class InvestmentRecyclerViewAdapter extends RecyclerView.Adapter <Investm
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-
-        Gson StemGson =new GsonBuilder().create();
-       // Toast.makeText(mContext, mDataset.get(position).getId().toString(), Toast.LENGTH_SHORT).show();
-
-
-
         holder.investmentName_tv.setText( mDataset.get(position).getInvestmentName().toString());
         holder.id_tv.setText(mDataset.get(position).getId().toString());
 

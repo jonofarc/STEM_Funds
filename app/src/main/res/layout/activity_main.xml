@@ -8,14 +8,28 @@
     android:layout_height="match_parent"
     tools:context="com.example.jonathanmaldonado.stem_funds.MainActivity">
 
+    <TextView
+        android:textColor="#000000"
+        android:padding="10dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="@string/lbl_number_of_results"
+        android:id="@+id/tv_results_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <SeekBar
         android:id="@+id/simpleSeekBar"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:max="200"
+
+        android:max="199"
         android:progress="10"
         />
+    <EditText
+        android:hint="@string/lbl_filter_by_investment_name"
+        android:id="@+id/et_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
@@ -28,9 +42,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/resp_tv"
         android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
 
 </LinearLayout>
