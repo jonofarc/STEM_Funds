@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private String updateID;
     private String updateName;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,16 +59,14 @@ public class MainActivity extends AppCompatActivity {
         simpleSeekBar = (SeekBar) findViewById(R.id.simpleSeekBar);
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
         filterET = (EditText) findViewById(R.id.et_filter);
-
         setSeekerBarListener();
         setEditTextListener();
         connectAndGetApiData();
         Intent intent = getIntent();
-        if (intent != null ) {
-            updateID=intent.getStringExtra(UpdateInvestment.UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA);
-            updateName=intent.getStringExtra(UpdateInvestment.UPDATE_INVESTMENT_ACTIVITY_INVESTMENT_NAME_EXTRA);
+        if (intent != null) {
+            updateID = intent.getStringExtra(UpdateInvestment.UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA);
+            updateName = intent.getStringExtra(UpdateInvestment.UPDATE_INVESTMENT_ACTIVITY_INVESTMENT_NAME_EXTRA);
         }
-
 
 
     }
@@ -79,24 +76,22 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             public void afterTextChanged(Editable s) {
-
                 dataFilter();
-
             }
         });
     }
-    public void replaceLocalData(){
-        StemResults[Integer.parseInt(updateID)-1].setInvestmentName(updateName);// we remove 1 to correctly find the item on the array
+
+    public void replaceLocalData() {
+        StemResults[Integer.parseInt(updateID) - 1].setInvestmentName(updateName);// we remove 1 to correctly find the item on the array
     }
+
     private void setSeekerBarListener() {
         simpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressChangedValue = 0;
@@ -125,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder completeURL = new StringBuilder();
         completeURL.append(BASE_URL).append("offset=").append(String.valueOf(offset)).append("&limit=").append(String.valueOf(limit));
         Request request = new Request.Builder().url(completeURL.toString()).build();
-
         client.newCall(request).enqueue(
                 new okhttp3.Callback() {
                     @Override
@@ -135,43 +129,29 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
-
                         if (response.isSuccessful()) {
-
                             String resp = response.body().string();
                             try {
-
                                 Gson StemGson = new GsonBuilder().create();
                                 StemResults = StemGson.fromJson(resp, Stem[].class);
-
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-
-
                                         dataFilter();
-
                                     }
 
 
                                 });
-
                             } catch (JsonParseException e) {
                                 e.printStackTrace();
                             }
-
-
                             Log.d(TAG, "onResponse resp:  " + resp);
                         } else {
                             Log.d(TAG, "onResponse: Application Error");
                         }
-
-
                     }
                 }
         );
-
-
     }
 
     public void dataFilter() {
@@ -192,15 +172,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
         // we replace local data to not have to request it again if it was successfully modified
-        if (!TextUtils.isEmpty(updateID)&& !TextUtils.isEmpty(updateName)) {
+        if (!TextUtils.isEmpty(updateID) && !TextUtils.isEmpty(updateName)) {
             replaceLocalData();
         }
 
-
-
         final List<Stem> InvestNames = resultsInvest;
-
-
         setRecyclerView(InvestNames);
     }
 

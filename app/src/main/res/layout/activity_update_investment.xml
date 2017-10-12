@@ -7,29 +7,24 @@
     android:fitsSystemWindows="true"
     tools:context="com.example.jonathanmaldonado.stem_funds.ui.UpdateInvestment">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/main_content"
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
-
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-            android:layout_height="wrap_content">
+            android:orientation="vertical">
 
             <EditText
-                android:hint="InvestmentName"
                 android:id="@+id/investmentName_update_et"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-
-
+                android:layout_height="wrap_content"
+                android:hint="InvestmentName" />
 
         </LinearLayout>
 
@@ -38,11 +33,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
-            android:src="@drawable/ic_check"
-            android:onClick="updateInvestmentName"
             android:backgroundTint="@color/colorPrimary"
-            app:rippleColor="@color/cardview_light_background"
-            app:layout_anchorGravity="bottom|right|end" />
+            android:onClick="updateInvestmentName"
+            android:src="@drawable/ic_check"
+            app:layout_anchorGravity="bottom|right|end"
+            app:rippleColor="@color/cardview_light_background" />
 
     </android.support.design.widget.CoordinatorLayout>
 

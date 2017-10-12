@@ -50,7 +50,7 @@ public class FundDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         message = intent.getStringExtra(InvestmentRecyclerViewAdapter.RECYCLER_VIEW_EXTRA);
         if (intent != null && !TextUtils.isEmpty(message)) {
-            
+
             investmentNameTV.setText("");
             agencyTV.setText("");
             subagencyTV.setText("");
@@ -67,9 +67,6 @@ public class FundDetailActivity extends AppCompatActivity {
         completeURL.append(message);
         Request request = new Request.Builder().url(completeURL.toString()).build();
 
-        // thys is a Synchoronous request
-        // this needs a separate thread
-        // Response response = client.newCall(request).execute();
 
         client.newCall(request).enqueue(
                 new okhttp3.Callback() {
