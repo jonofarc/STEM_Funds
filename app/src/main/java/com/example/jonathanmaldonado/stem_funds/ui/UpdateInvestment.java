@@ -23,7 +23,6 @@ public class UpdateInvestment extends AppCompatActivity {
 
     public static final String UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA = "com.example.jonathanmaldonado.stem_funds.UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA";
     public static final String UPDATE_INVESTMENT_ACTIVITY_INVESTMENT_NAME_EXTRA = "com.example.jonathanmaldonado.stem_funds.UPDATE_INVESTMENT_ACTIVITY_INVESTMENT_NAME_EXTRA";
-
     private String currentID;
     private String currentAgency;
     private String currentSubagency;
@@ -32,9 +31,7 @@ public class UpdateInvestment extends AppCompatActivity {
     public static final String BASE_URL = "http://iwg-prod-web-interview.azurewebsites.net/stem/v1/funds";
     private EditText investmentNameET;
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
     private OkHttpClient client = new OkHttpClient();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +67,7 @@ public class UpdateInvestment extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        startFundDetailActivity();
+                                        startFundDetailActivity(true);
                                     }
 
 
@@ -84,13 +81,26 @@ public class UpdateInvestment extends AppCompatActivity {
 
                         } else {
                             Log.d(TAG, "onResponse: Application Error");
+                            try {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        startFundDetailActivity(false);
+                                    }
+
+
+                                });
+
+                            } catch (JsonParseException e) {
+                                e.printStackTrace();
+                            }
+
                         }
 
                     }
                 }
         );
     }
-
 
     public void updateInvestmentName(View view) {
 
@@ -99,38 +109,43 @@ public class UpdateInvestment extends AppCompatActivity {
         currentAgency = intent.getStringExtra(FundDetailActivity.FUND_DETAIL_ACTIVITY_VIEW_AGENCY_EXTRA);
         currentSubagency = intent.getStringExtra(FundDetailActivity.FUND_DETAIL_ACTIVITY_VIEW_SUBAGENCY_EXTRA);
         currentDescription = intent.getStringExtra(FundDetailActivity.FUND_DETAIL_ACTIVITY_VIEW_DESCRIPTION_EXTRA);
-
-        if (intent != null && !TextUtils.isEmpty(currentID)) {
-
-
-            String myJsonString = "{\n" +
-                    "  \"Id\": \"" + currentID.toString() + "\",\n" +
-                    "  \"InvestmentName\": \"" + investmentNameET.getText().toString() + "\",\n" +
-                    "  \"Agency\": \"" + currentAgency.toString() + "\",\n" +
-                    "  \"Subagency\": \"" + currentSubagency.toString() + "\",\n" +
-                    "  \"BriefDescription\": \"" + currentDescription.toString() + "\",\n" +
-                    "}";
+        if(!TextUtils.isEmpty(investmentNameET.getText().toString())){
+            if (intent != null && !TextUtils.isEmpty(currentID)  ) {
 
 
-            try {
+                String myJsonString = "{\n" +
+                        "  \"Id\": \"" + currentID.toString() + "\",\n" +
+                        "  \"InvestmentName\": \"" + investmentNameET.getText().toString() + "\",\n" +
+                        "  \"Agency\": \"" + currentAgency.toString() + "\",\n" +
+                        "  \"Subagency\": \"" + currentSubagency.toString() + "\",\n" +
+                        "  \"BriefDescription\": \"" + currentDescription.toString() + "\",\n" +
+                        "}";
 
-                putRequestWithHeaderAndBody(BASE_URL + "/" + currentID, myJsonString);
-            } catch (IOException e) {
-                e.printStackTrace();
+                try {
+
+                    putRequestWithHeaderAndBody(BASE_URL + "/" + currentID, myJsonString);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                Toast.makeText(this, R.string.failed_request, Toast.LENGTH_SHORT).show();
             }
-
-
-            //connectAndSetApiData();
-        } else {
-            Toast.makeText(this, R.string.failed_request, Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, R.string.lbl_no_empty_fields, Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    public void startFundDetailActivity() {
+    public void startFundDetailActivity(boolean changeSuccesfull) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA, currentID.toString());
-        intent.putExtra(UPDATE_INVESTMENT_ACTIVITY_INVESTMENT_NAME_EXTRA, investmentNameET.getText().toString());
+        if(changeSuccesfull){
+            intent.putExtra(UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA, currentID.toString());
+            intent.putExtra(UPDATE_INVESTMENT_ACTIVITY_INVESTMENT_NAME_EXTRA, investmentNameET.getText().toString());
+            Toast.makeText(this, R.string.update_complete, Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, R.string.failed_request, Toast.LENGTH_SHORT).show();
+        }
         startActivity(intent);
     }
 }

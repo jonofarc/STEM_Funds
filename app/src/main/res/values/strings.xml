@@ -5,4 +5,5 @@
     <string name="lbl_no_empty_fields">Fields can not be empty</string>
     <string name="failed_request">Failed request please try again later</string>
     <string name="lbl_investment_id">Investment ID:</string>
+    <string name="update_complete">Update complete</string>
 </resources>
