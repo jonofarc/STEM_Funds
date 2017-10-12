@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.jonathanmaldonado.stem_funds.R;
-import com.example.jonathanmaldonado.stem_funds.stem_funds.InvestmentNames;
 import com.google.gson.JsonParseException;
 
 import java.io.IOException;
@@ -22,7 +21,8 @@ import okhttp3.RequestBody;
 
 public class UpdateInvestment extends AppCompatActivity {
 
-    public static final String UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA="com.example.jonathanmaldonado.stem_funds.UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA";
+    public static final String UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA = "com.example.jonathanmaldonado.stem_funds.UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA";
+    public static final String UPDATE_INVESTMENT_ACTIVITY_INVESTMENT_NAME_EXTRA = "com.example.jonathanmaldonado.stem_funds.UPDATE_INVESTMENT_ACTIVITY_INVESTMENT_NAME_EXTRA";
 
     private String currentID;
     private String currentAgency;
@@ -30,33 +30,24 @@ public class UpdateInvestment extends AppCompatActivity {
     private String currentDescription;
     private static final String TAG = FundDetailActivity.class.getSimpleName();
     public static final String BASE_URL = "http://iwg-prod-web-interview.azurewebsites.net/stem/v1/funds";
-
-    EditText investmentNameET;
-
+    private EditText investmentNameET;
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-    OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client = new OkHttpClient();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_investment);
-
-        investmentNameET= (EditText) findViewById(R.id.investmentName_update_et);
-
-
+        investmentNameET = (EditText) findViewById(R.id.investmentName_update_et);
 
     }
 
-    public void putRequestWithHeaderAndBody(String url, String jsonBody)throws IOException {
-
+    public void putRequestWithHeaderAndBody(String url, String jsonBody) throws IOException {
 
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, jsonBody);
-
-
-
         Request request = new Request.Builder()
                 .url(url)
                 .put(body) //PUT
@@ -72,46 +63,33 @@ public class UpdateInvestment extends AppCompatActivity {
                     @Override
                     public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
 
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
 
-
-
-                            String resp= response.body().string();
+                            String resp = response.body().string();
                             try {
-
-
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        // TODO Auto-generated method stub
-                                    startFundDetailActivity();
-
+                                        startFundDetailActivity();
                                     }
 
 
                                 });
 
-                            }catch (JsonParseException e){
+                            } catch (JsonParseException e) {
                                 e.printStackTrace();
                             }
 
+                            Log.d(TAG, "onResponse resp:  " + resp);
 
-
-                            Log.d(TAG, "onResponse resp:  "+ resp);
-
-                        }else{
+                        } else {
                             Log.d(TAG, "onResponse: Application Error");
                         }
-
-
-
-
 
                     }
                 }
         );
     }
-
 
 
     public void updateInvestmentName(View view) {
@@ -122,36 +100,37 @@ public class UpdateInvestment extends AppCompatActivity {
         currentSubagency = intent.getStringExtra(FundDetailActivity.FUND_DETAIL_ACTIVITY_VIEW_SUBAGENCY_EXTRA);
         currentDescription = intent.getStringExtra(FundDetailActivity.FUND_DETAIL_ACTIVITY_VIEW_DESCRIPTION_EXTRA);
 
-        if(intent != null && !TextUtils.isEmpty(currentID)){
+        if (intent != null && !TextUtils.isEmpty(currentID)) {
 
 
-
-            String myJsonString="{\n" +
-                    "  \"Id\": \""+ currentID.toString()+"\",\n" +
-                    "  \"InvestmentName\": \""+investmentNameET.getText().toString()+"\",\n" +
-                    "  \"Agency\": \""+currentAgency.toString()+"\",\n" +
-                    "  \"Subagency\": \""+currentSubagency.toString()+"\",\n" +
-                    "  \"BriefDescription\": \""+currentDescription.toString()+"\",\n" +
+            String myJsonString = "{\n" +
+                    "  \"Id\": \"" + currentID.toString() + "\",\n" +
+                    "  \"InvestmentName\": \"" + investmentNameET.getText().toString() + "\",\n" +
+                    "  \"Agency\": \"" + currentAgency.toString() + "\",\n" +
+                    "  \"Subagency\": \"" + currentSubagency.toString() + "\",\n" +
+                    "  \"BriefDescription\": \"" + currentDescription.toString() + "\",\n" +
                     "}";
 
 
             try {
 
-                putRequestWithHeaderAndBody(BASE_URL+"/"+ currentID,myJsonString);
+                putRequestWithHeaderAndBody(BASE_URL + "/" + currentID, myJsonString);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
 
             //connectAndSetApiData();
-        }else{
+        } else {
             Toast.makeText(this, R.string.failed_request, Toast.LENGTH_SHORT).show();
         }
 
     }
-    public void startFundDetailActivity(){
-        Intent intent = new Intent(this , MainActivity.class);
 
+    public void startFundDetailActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA, currentID.toString());
+        intent.putExtra(UPDATE_INVESTMENT_ACTIVITY_INVESTMENT_NAME_EXTRA, investmentNameET.getText().toString());
         startActivity(intent);
     }
 }

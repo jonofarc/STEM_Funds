@@ -1,5 +1,5 @@
 
-package com.example.jonathanmaldonado.stem_funds.stem_funds;
+package com.example.jonathanmaldonado.stem_funds.entities;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.example.jonathanmaldonado.stem_funds.InvestmentRecyclerViewAdapter;
 import com.example.jonathanmaldonado.stem_funds.R;
-import com.example.jonathanmaldonado.stem_funds.stem_funds.Stem;
+import com.example.jonathanmaldonado.stem_funds.entities.Stem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,13 +34,11 @@ import okhttp3.Request;
 public class MainActivity extends AppCompatActivity {
 
 
-
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final String BASE_URL = "http://iwg-prod-web-interview.azurewebsites.net/stem/v1/funds?";
-    public int offset=0;
-    public int limit =10;
+    public int offset = 0;
+    public int limit = 10;
     private OkHttpClient client;
-
     private TextView resultsNumberTV;
     private SeekBar simpleSeekBar;
     private EditText filterET;
@@ -48,26 +46,30 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private Stem[] StemResults;
-
+    private String updateID;
+    private String updateName;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        client = new OkHttpClient.Builder().build();
 
-        resultsNumberTV= (TextView) findViewById(R.id.tv_results_number);
-        simpleSeekBar=(SeekBar)findViewById(R.id.simpleSeekBar);
+        client = new OkHttpClient.Builder().build();
+        resultsNumberTV = (TextView) findViewById(R.id.tv_results_number);
+        simpleSeekBar = (SeekBar) findViewById(R.id.simpleSeekBar);
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
         filterET = (EditText) findViewById(R.id.et_filter);
 
-
-
         setSeekerBarListener();
         setEditTextListener();
-
         connectAndGetApiData();
+        Intent intent = getIntent();
+        if (intent != null ) {
+            updateID=intent.getStringExtra(UpdateInvestment.UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA);
+            updateName=intent.getStringExtra(UpdateInvestment.UPDATE_INVESTMENT_ACTIVITY_INVESTMENT_NAME_EXTRA);
+        }
+
 
 
     }
@@ -87,13 +89,14 @@ public class MainActivity extends AppCompatActivity {
 
             public void afterTextChanged(Editable s) {
 
-                // you can call or do what you want with your EditText here
                 dataFilter();
 
             }
         });
     }
-
+    public void replaceLocalData(){
+        StemResults[Integer.parseInt(updateID)-1].setInvestmentName(updateName);// we remove 1 to correctly find the item on the array
+    }
     private void setSeekerBarListener() {
         simpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progressChangedValue = 0;
@@ -103,15 +106,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
+
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(MainActivity.this, "Seek bar progress is :" + progressChangedValue,
-                        Toast.LENGTH_SHORT).show();
-                limit=progressChangedValue;
-                StringBuilder results= new StringBuilder();
-                results.append("Number of results: ").append(String.valueOf(limit+1));
+                limit = progressChangedValue;
+                StringBuilder results = new StringBuilder();
+                results.append("Number of results: ").append(String.valueOf(limit + 1));
                 resultsNumberTV.setText(results.toString());// we add 1 to correctly show results
                 connectAndGetApiData();
             }
@@ -119,18 +120,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void connectAndGetApiData(){
-
+    public void connectAndGetApiData() {
 
         StringBuilder completeURL = new StringBuilder();
         completeURL.append(BASE_URL).append("offset=").append(String.valueOf(offset)).append("&limit=").append(String.valueOf(limit));
-
-
-
-
         Request request = new Request.Builder().url(completeURL.toString()).build();
-
-
 
         client.newCall(request).enqueue(
                 new okhttp3.Callback() {
@@ -142,21 +136,18 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
 
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
 
-
-
-                            String resp= response.body().string();
+                            String resp = response.body().string();
                             try {
 
-
-                                Gson StemGson =new GsonBuilder().create();
-                                StemResults = StemGson.fromJson(resp,Stem[].class);
+                                Gson StemGson = new GsonBuilder().create();
+                                StemResults = StemGson.fromJson(resp, Stem[].class);
 
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        // TODO Auto-generated method stub
+
 
                                         dataFilter();
 
@@ -165,19 +156,15 @@ public class MainActivity extends AppCompatActivity {
 
                                 });
 
-                            }catch (JsonParseException e){
+                            } catch (JsonParseException e) {
                                 e.printStackTrace();
                             }
 
 
-
-                            Log.d(TAG, "onResponse resp:  "+ resp);
-                        }else{
+                            Log.d(TAG, "onResponse resp:  " + resp);
+                        } else {
                             Log.d(TAG, "onResponse: Application Error");
                         }
-
-
-
 
 
                     }
@@ -187,35 +174,38 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void dataFilter(){
+    public void dataFilter() {
 
-        List<Stem> resultsInvest= new ArrayList<>();
+        List<Stem> resultsInvest = new ArrayList<>();
 
-        for (int i=0; i<StemResults.length; i++){
-            String str1=filterET.getText().toString();
-            String str2=StemResults[i].getInvestmentName();
+        for (int i = 0; i < StemResults.length; i++) {
+            String str1 = filterET.getText().toString();
+            String str2 = StemResults[i].getInvestmentName();
 
-            if(!TextUtils.isEmpty(str1)){
-                if(str2.toLowerCase().contains(str1.toLowerCase())){
+            if (!TextUtils.isEmpty(str1)) {
+                if (str2.toLowerCase().contains(str1.toLowerCase())) {
                     resultsInvest.add(StemResults[i]);
                 }
-            }else{
+            } else {
                 resultsInvest.add(StemResults[i]);
             }
 
         }
+        // we replace local data to not have to request it again if it was successfully modified
+        if (!TextUtils.isEmpty(updateID)&& !TextUtils.isEmpty(updateName)) {
+            replaceLocalData();
+        }
 
-        final List<Stem> InvestNames= resultsInvest;
 
+
+        final List<Stem> InvestNames = resultsInvest;
 
 
         setRecyclerView(InvestNames);
     }
 
 
-
-    public void setRecyclerView(  List<Stem> results){
-
+    public void setRecyclerView(List<Stem> results) {
 
 
         mLayoutManager = new LinearLayoutManager(this);
@@ -226,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addInvestment(View view) {
-        Intent intent = new Intent(this , AddInvestmentActivity.class);
+        Intent intent = new Intent(this, AddInvestmentActivity.class);
         startActivity(intent);
     }
 

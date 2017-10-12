@@ -34,10 +34,10 @@ public class AddInvestmentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_investment);
 
-        investmentNameET= (EditText) findViewById(R.id.investmentName_et);
-        agencyET= (EditText) findViewById(R.id.agency_et);
-        subagencyET= (EditText) findViewById(R.id.subagency_et);
-        briefDescriptionET= (EditText) findViewById(R.id.briefDescription_et);
+        investmentNameET = (EditText) findViewById(R.id.investmentName_et);
+        agencyET = (EditText) findViewById(R.id.agency_et);
+        subagencyET = (EditText) findViewById(R.id.subagency_et);
+        briefDescriptionET = (EditText) findViewById(R.id.briefDescription_et);
 
 
     }
@@ -60,11 +60,10 @@ public class AddInvestmentActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
 
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
 
 
-
-                            String resp= response.body().string();
+                            String resp = response.body().string();
                             try {
 
 
@@ -80,20 +79,16 @@ public class AddInvestmentActivity extends AppCompatActivity {
 
                                 });
 
-                            }catch (JsonParseException e){
+                            } catch (JsonParseException e) {
                                 e.printStackTrace();
                             }
 
 
+                            Log.d(TAG, "onResponse resp:  " + resp);
 
-                            Log.d(TAG, "onResponse resp:  "+ resp);
-
-                        }else{
+                        } else {
                             Log.d(TAG, "onResponse: Application Error");
                         }
-
-
-
 
 
                     }
@@ -104,36 +99,34 @@ public class AddInvestmentActivity extends AppCompatActivity {
     }
 
     public void postInvestment(View view) {
-        if(!investmentNameET.getText().toString().isEmpty() && !agencyET.getText().toString().isEmpty() && !subagencyET.getText().toString().isEmpty() && !briefDescriptionET.getText().toString().isEmpty()){
+        if (!investmentNameET.getText().toString().isEmpty() && !agencyET.getText().toString().isEmpty() && !subagencyET.getText().toString().isEmpty() && !briefDescriptionET.getText().toString().isEmpty()) {
 
-            String myJsonString="{\n" +
-
-                    "  \"InvestmentName\": \""+investmentNameET.getText().toString()+"\",\n" +
-                    "  \"Agency\": \""+agencyET.getText().toString()+"\",\n" +
-                    "  \"Subagency\": \""+subagencyET.getText().toString()+"\",\n" +
-                    "  \"BriefDescription\": \""+briefDescriptionET.getText().toString()+"\",\n" +
-
+            String myJsonString = "{\n" +
+                    "  \"InvestmentName\": \"" + investmentNameET.getText().toString() + "\",\n" +
+                    "  \"Agency\": \"" + agencyET.getText().toString() + "\",\n" +
+                    "  \"Subagency\": \"" + subagencyET.getText().toString() + "\",\n" +
+                    "  \"BriefDescription\": \"" + briefDescriptionET.getText().toString() + "\",\n" +
                     "}";
 
 
-
             try {
-                PostItem(BASE_URL,myJsonString);
+                PostItem(BASE_URL, myJsonString);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
 
-        }else{
+        } else {
             Toast.makeText(this, R.string.lbl_no_empty_fields, Toast.LENGTH_SHORT).show();
         }
 
 
     }
-    public void startMainActivity(){
 
-        Intent intent = new Intent(this , MainActivity.class);
+    public void startMainActivity() {
+
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 }

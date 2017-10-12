@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import com.example.jonathanmaldonado.stem_funds.stem_funds.Stem;
+import com.example.jonathanmaldonado.stem_funds.entities.Stem;
 import com.example.jonathanmaldonado.stem_funds.ui.FundDetailActivity;
 
 import java.util.ArrayList;
