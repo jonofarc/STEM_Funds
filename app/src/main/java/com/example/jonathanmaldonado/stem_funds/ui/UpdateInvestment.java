@@ -5,35 +5,33 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.jonathanmaldonado.stem_funds.InvestmentRecyclerViewAdapter;
 import com.example.jonathanmaldonado.stem_funds.R;
 import com.example.jonathanmaldonado.stem_funds.stem_funds.InvestmentNames;
-import com.example.jonathanmaldonado.stem_funds.stem_funds.Stem;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class UpdateInvestment extends AppCompatActivity {
 
-    private String message;
+    public static final String UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA="com.example.jonathanmaldonado.stem_funds.UPDATE_INVESTMENT_ACTIVITY_ID_EXTRA";
+
+    private String currentID;
+    private String currentAgency;
+    private String currentSubagency;
+    private String currentDescription;
     private static final String TAG = FundDetailActivity.class.getSimpleName();
     public static final String BASE_URL = "http://iwg-prod-web-interview.azurewebsites.net/stem/v1/funds";
 
+    EditText investmentNameET;
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -45,40 +43,10 @@ public class UpdateInvestment extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_investment);
 
+        investmentNameET= (EditText) findViewById(R.id.investmentName_update_et);
 
 
 
-        Intent intent = getIntent();
-        message = intent.getStringExtra(FundDetailActivity.FUND_DETAIL_ACTIVITY_VIEW_EXTRA);
-        if(intent != null && !TextUtils.isEmpty(message)){
-
-
-            String myJsonString="{\n" +
-                    "  \"Id\": 2,\n" +
-                    "  \"InvestmentName\": \"sample string jan new\",\n" +
-                    "  \"Agency\": \"sample string jonathan Agency new\",\n" +
-                    "  \"Subagency\": \"sample string jonathan sub agency\",\n" +
-                    "  \"BriefDescription\": \"sample string 5\",\n" +
-                    "  \"YearEstablished\": 6,\n" +
-                    "  \"FundingFY2008\": 7.0,\n" +
-                    "  \"FundingFY2009\": 8.0,\n" +
-                    "  \"FundingFY2010\": 9.0,\n" +
-                    "  \"MissionSpecificOrGeneralStem\": \"sample string 10\",\n" +
-                    "  \"AgencyOrMissionRelatedNeeds\": \"sample string 11\",\n" +
-                    "  \"PrimaryInvestmentObjective\": \"sample string 12\"\n" +
-                    "}";
-
-
-            try {
-                myPost(BASE_URL,myJsonString);
-                //putRequestWithHeaderAndBody(BASE_URL+"/"+message,myJsonString);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            //connectAndSetApiData();
-        }
     }
 
     public void putRequestWithHeaderAndBody(String url, String jsonBody)throws IOException {
@@ -116,7 +84,7 @@ public class UpdateInvestment extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         // TODO Auto-generated method stub
-
+                                    startFundDetailActivity();
 
                                     }
 
@@ -144,138 +112,46 @@ public class UpdateInvestment extends AppCompatActivity {
         );
     }
 
-    public void myPost(String url, String json) throws IOException {
-        RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
 
 
-        client.newCall(request).enqueue(
-                new okhttp3.Callback() {
-                    @Override
-                    public void onFailure(okhttp3.Call call, IOException e) {
+    public void updateInvestmentName(View view) {
 
-                    }
+        Intent intent = getIntent();
+        currentID = intent.getStringExtra(FundDetailActivity.FUND_DETAIL_ACTIVITY_VIEW_ID_EXTRA);
+        currentAgency = intent.getStringExtra(FundDetailActivity.FUND_DETAIL_ACTIVITY_VIEW_AGENCY_EXTRA);
+        currentSubagency = intent.getStringExtra(FundDetailActivity.FUND_DETAIL_ACTIVITY_VIEW_SUBAGENCY_EXTRA);
+        currentDescription = intent.getStringExtra(FundDetailActivity.FUND_DETAIL_ACTIVITY_VIEW_DESCRIPTION_EXTRA);
 
-                    @Override
-                    public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
-
-                        if(response.isSuccessful()){
+        if(intent != null && !TextUtils.isEmpty(currentID)){
 
 
 
-                            String resp= response.body().string();
-                            try {
+            String myJsonString="{\n" +
+                    "  \"Id\": \""+ currentID.toString()+"\",\n" +
+                    "  \"InvestmentName\": \""+investmentNameET.getText().toString()+"\",\n" +
+                    "  \"Agency\": \""+currentAgency.toString()+"\",\n" +
+                    "  \"Subagency\": \""+currentSubagency.toString()+"\",\n" +
+                    "  \"BriefDescription\": \""+currentDescription.toString()+"\",\n" +
+                    "}";
 
 
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        // TODO Auto-generated method stub
+            try {
+
+                putRequestWithHeaderAndBody(BASE_URL+"/"+ currentID,myJsonString);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
 
-                                    }
-
-
-                                });
-
-                            }catch (JsonParseException e){
-                                e.printStackTrace();
-                            }
-
-
-
-                            Log.d(TAG, "onResponse resp:  "+ resp);
-
-                        }else{
-                            Log.d(TAG, "onResponse: Application Error");
-                        }
-
-
-
-
-
-                    }
-                }
-        );
-
+            //connectAndSetApiData();
+        }else{
+            Toast.makeText(this, R.string.failed_request, Toast.LENGTH_SHORT).show();
+        }
 
     }
+    public void startFundDetailActivity(){
+        Intent intent = new Intent(this , MainActivity.class);
 
-    private void connectAndSetApiData() {
-
-        StringBuilder completeURL = new StringBuilder();
-        completeURL.append(BASE_URL);
-        completeURL.append(message);
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-
-
-
-
-
-
-
-        RequestBody requestBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("InvestmentName", "JonInvestment")
-                .build();
-
-        Request request = new Request.Builder()
-                .url(BASE_URL)
-                .method("POST", RequestBody.create(null, new byte[0]))
-                .post(requestBody)
-                .build();
-
-        client.newCall(request).enqueue(
-                new okhttp3.Callback() {
-                    @Override
-                    public void onFailure(okhttp3.Call call, IOException e) {
-
-                    }
-
-                    @Override
-                    public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
-
-                        if(response.isSuccessful()){
-
-
-
-                            String resp= response.body().string();
-                            try {
-
-
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        // TODO Auto-generated method stub
-
-
-                                    }
-
-
-                                });
-
-                            }catch (JsonParseException e){
-                                e.printStackTrace();
-                            }
-
-
-
-                            Log.d(TAG, "onResponse resp:  "+ resp);
-                        }else{
-                            Log.d(TAG, "onResponse: Application Error");
-                        }
-
-
-
-
-
-                    }
-                }
-        );
-
-
+        startActivity(intent);
     }
 }

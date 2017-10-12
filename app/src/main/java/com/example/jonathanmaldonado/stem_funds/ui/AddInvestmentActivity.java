@@ -21,7 +21,7 @@ import okhttp3.RequestBody;
 public class AddInvestmentActivity extends AppCompatActivity {
 
     private static final String TAG = FundDetailActivity.class.getSimpleName();
-    public static final String BASE_URL = "http://iwg-prod-web-interview.azurewebsites.net/stem/v1/funds";
+    public static final String BASE_URL = "http://iwg-prod-web-interview.azurewebsites.net/stem/v1/funds/";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     OkHttpClient client = new OkHttpClient();
     EditText investmentNameET;
@@ -112,13 +112,7 @@ public class AddInvestmentActivity extends AppCompatActivity {
                     "  \"Agency\": \""+agencyET.getText().toString()+"\",\n" +
                     "  \"Subagency\": \""+subagencyET.getText().toString()+"\",\n" +
                     "  \"BriefDescription\": \""+briefDescriptionET.getText().toString()+"\",\n" +
-                    "  \"YearEstablished\": 6,\n" +
-                    "  \"FundingFY2008\": 7.0,\n" +
-                    "  \"FundingFY2009\": 8.0,\n" +
-                    "  \"FundingFY2010\": 9.0,\n" +
-                    "  \"MissionSpecificOrGeneralStem\": \"sample string 10\",\n" +
-                    "  \"AgencyOrMissionRelatedNeeds\": \"sample string 11\",\n" +
-                    "  \"PrimaryInvestmentObjective\": \"sample string 12\"\n" +
+
                     "}";
 
 

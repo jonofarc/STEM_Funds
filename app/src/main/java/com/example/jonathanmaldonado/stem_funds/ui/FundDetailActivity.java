@@ -23,12 +23,17 @@ import okhttp3.Request;
 
 public class FundDetailActivity extends AppCompatActivity {
 
-    public static final String FUND_DETAIL_ACTIVITY_VIEW_EXTRA="com.example.jonathanmaldonado.stem_funds.FUND_DETAIL_ACTIVITY_VIEW_EXTRA";
+    public static final String FUND_DETAIL_ACTIVITY_VIEW_ID_EXTRA="com.example.jonathanmaldonado.stem_funds.FUND_DETAIL_ACTIVITY_VIEW_ID_EXTRA";
+    public static final String FUND_DETAIL_ACTIVITY_VIEW_AGENCY_EXTRA="com.example.jonathanmaldonado.stem_funds.FUND_DETAIL_ACTIVITY_VIEW_AGENCY_EXTRA";
+    public static final String FUND_DETAIL_ACTIVITY_VIEW_SUBAGENCY_EXTRA="com.example.jonathanmaldonado.stem_funds.FUND_DETAIL_ACTIVITY_VIEW_SUBAGENCY_EXTRA";
+    public static final String FUND_DETAIL_ACTIVITY_VIEW_DESCRIPTION_EXTRA="com.example.jonathanmaldonado.stem_funds.FUND_DETAIL_ACTIVITY_VIEW_DESCRIPTION_EXTRA";
+
     private String message;
     OkHttpClient client;
     TextView investmentNameTV;
     TextView agencyTV;
     TextView subagencyTV;
+    TextView descriptionTV;
     private static final String TAG = FundDetailActivity.class.getSimpleName();
     public static final String BASE_URL = "http://iwg-prod-web-interview.azurewebsites.net/stem/v1/funds/";
     @Override
@@ -39,12 +44,18 @@ public class FundDetailActivity extends AppCompatActivity {
         investmentNameTV= (TextView) findViewById(R.id.investment_name_tv);
         agencyTV= (TextView) findViewById(R.id.agency_tv);
         subagencyTV= (TextView) findViewById(R.id.subagency_tv);
+        descriptionTV= (TextView) findViewById(R.id.briefDescription_tv);
         client = new OkHttpClient.Builder().build();
         Intent intent = getIntent();
         message = intent.getStringExtra(InvestmentRecyclerViewAdapter.RECYCLER_VIEW_EXTRA);
         if(intent != null && !TextUtils.isEmpty(message)){
 
 
+
+            investmentNameTV.setText("");
+            agencyTV.setText("");
+            subagencyTV.setText("");
+            descriptionTV.setText("");
             connectAndGetApiData();
         }
 
@@ -95,9 +106,10 @@ public class FundDetailActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         // TODO Auto-generated method stub
-                                        investmentNameTV.setText(StemResults.getInvestmentName().toString());
-                                        agencyTV.setText(StemResults.getAgency().toString());
-                                        subagencyTV.setText(StemResults.getSubagency());
+                                        investmentNameTV.setText("Name: "+StemResults.getInvestmentName().toString());
+                                        agencyTV.setText("Agency: "+StemResults.getAgency().toString());
+                                        subagencyTV.setText("SubAgency: "+StemResults.getSubagency());
+                                        descriptionTV.setText(StemResults.getBriefDescription());
 
                                     }
 
@@ -128,7 +140,10 @@ public class FundDetailActivity extends AppCompatActivity {
 
     public void editInvestmentName(View view) {
         Intent intent = new Intent(this , UpdateInvestment.class);
-        intent.putExtra(FUND_DETAIL_ACTIVITY_VIEW_EXTRA, message.toString());
+        intent.putExtra(FUND_DETAIL_ACTIVITY_VIEW_ID_EXTRA, message.toString());
+        intent.putExtra(FUND_DETAIL_ACTIVITY_VIEW_AGENCY_EXTRA, agencyTV.getText().toString());
+        intent.putExtra(FUND_DETAIL_ACTIVITY_VIEW_SUBAGENCY_EXTRA, subagencyTV.getText().toString());
+        intent.putExtra(FUND_DETAIL_ACTIVITY_VIEW_DESCRIPTION_EXTRA, descriptionTV.getText().toString());
         startActivity(intent);
     }
 }

@@ -3,4 +3,5 @@
     <string name="lbl_filter_by_investment_name">Filter by Investment Name</string>
     <string name="lbl_number_of_results">Number of results: 10</string>
     <string name="lbl_no_empty_fields">Fields can not be empty</string>
+    <string name="failed_request">Failed request please try again later</string>
 </resources>
