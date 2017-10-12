@@ -7,15 +7,30 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.jonathanmaldonado.stem_funds.FundDetailActivity">
+    tools:context="com.example.jonathanmaldonado.stem_funds.ui.FundDetailActivity">
 
-    <TextView
-        android:id="@+id/investment_name_tv"
-        android:text="Loading..."
-        android:textSize="25sp"
-        android:textStyle="bold"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/investment_name_tv"
+            android:text="Loading..."
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content" />
+        <ImageButton
+
+            android:onClick="editInvestmentName"
+            android:background="@drawable/ic_border_color_black_48dp"
+            android:layout_toRightOf="@+id/investment_name_tv"
+            android:layout_marginLeft="2dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+             />
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/agency_tv"
         android:text="Loading..."
@@ -30,5 +45,6 @@
         android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 
 </LinearLayout>

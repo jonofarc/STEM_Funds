@@ -1,13 +1,16 @@
-package com.example.jonathanmaldonado.stem_funds;
+package com.example.jonathanmaldonado.stem_funds.ui;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jonathanmaldonado.stem_funds.InvestmentRecyclerViewAdapter;
+import com.example.jonathanmaldonado.stem_funds.R;
 import com.example.jonathanmaldonado.stem_funds.stem_funds.InvestmentNames;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,6 +23,7 @@ import okhttp3.Request;
 
 public class FundDetailActivity extends AppCompatActivity {
 
+    public static final String FUND_DETAIL_ACTIVITY_VIEW_EXTRA="com.example.jonathanmaldonado.stem_funds.FUND_DETAIL_ACTIVITY_VIEW_EXTRA";
     private String message;
     OkHttpClient client;
     TextView investmentNameTV;
@@ -120,5 +124,11 @@ public class FundDetailActivity extends AppCompatActivity {
         );
 
 
+    }
+
+    public void editInvestmentName(View view) {
+        Intent intent = new Intent(this , UpdateInvestment.class);
+        intent.putExtra(FUND_DETAIL_ACTIVITY_VIEW_EXTRA, message.toString());
+        startActivity(intent);
     }
 }

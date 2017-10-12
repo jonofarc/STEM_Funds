@@ -1,4 +1,4 @@
-package com.example.jonathanmaldonado.stem_funds;
+package com.example.jonathanmaldonado.stem_funds.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,12 +8,13 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jonathanmaldonado.stem_funds.InvestmentRecyclerViewAdapter;
+import com.example.jonathanmaldonado.stem_funds.R;
 import com.example.jonathanmaldonado.stem_funds.stem_funds.Stem;
 
 import com.google.gson.Gson;
@@ -33,12 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static final String TAG = MainActivity.class.getSimpleName();
-   // public static final String BASE_URL = "http://iwg-prod-web-interview.azurewebsites.net/stem/v1/funds?offset=0&limit=100";
-   public static final String BASE_URL = "http://iwg-prod-web-interview.azurewebsites.net/stem/v1/funds?";
+    public static final String BASE_URL = "http://iwg-prod-web-interview.azurewebsites.net/stem/v1/funds?";
     public int offset=0;
     public int limit =10;
     private OkHttpClient client;
-    private TextView respTV;
+
     private TextView resultsNumberTV;
     private SeekBar simpleSeekBar;
     private EditText filterET;
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         client = new OkHttpClient.Builder().build();
-        respTV= (TextView) findViewById(R.id.resp_tv);
+
         resultsNumberTV= (TextView) findViewById(R.id.tv_results_number);
         simpleSeekBar=(SeekBar)findViewById(R.id.simpleSeekBar);
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
@@ -64,10 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         setSeekerBarListener();
         setEditTextListener();
-
-       // recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-       // recyclerView.setHasFixedSize(true);
-       // recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         connectAndGetApiData();
 
@@ -126,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
 
         StringBuilder completeURL = new StringBuilder();
         completeURL.append(BASE_URL).append("offset=").append(String.valueOf(offset)).append("&limit=").append(String.valueOf(limit));
+
+
 
 
         Request request = new Request.Builder().url(completeURL.toString()).build();
@@ -189,12 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void dataFilter(){
 
-
-
-
-
-        Log.d(TAG, "onResponse: 1" +StemResults);
-        List<Stem> resultsInvestNames= new ArrayList<>();
+        List<Stem> resultsInvest= new ArrayList<>();
 
         for (int i=0; i<StemResults.length; i++){
             String str1=filterET.getText().toString();
@@ -202,17 +195,17 @@ public class MainActivity extends AppCompatActivity {
 
             if(!TextUtils.isEmpty(str1)){
                 if(str2.toLowerCase().contains(str1.toLowerCase())){
-                    resultsInvestNames.add(StemResults[i]);
+                    resultsInvest.add(StemResults[i]);
                 }
             }else{
-                resultsInvestNames.add(StemResults[i]);
+                resultsInvest.add(StemResults[i]);
             }
 
         }
-        // used to be able to modify view
-        final List<Stem> InvestNames= resultsInvestNames;
 
-        respTV.setText(InvestNames.toString());
+        final List<Stem> InvestNames= resultsInvest;
+
+
 
         setRecyclerView(InvestNames);
     }
