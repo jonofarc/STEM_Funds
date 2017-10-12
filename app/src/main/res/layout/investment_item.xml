@@ -23,7 +23,7 @@
                 android:padding="10dp"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:text="ID:"
+                android:text="@string/lbl_investment_id"
                 android:id="@+id/lbl_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -43,15 +43,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
+            <ImageView
+                android:id="@+id/card_imagevieweview"
+                android:tint="@color/colorPrimaryDark"
+                android:src="@drawable/ic_bank"
+                android:layout_width="48dp"
+                android:layout_marginRight="90dp"
+                android:layout_height="48dp" />
             <TextView
+
                 android:id="@+id/tv_investment_name"
                 android:textColor="#000000"
-                android:padding="10dp"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:text="Item1"
-                android:layout_width="300dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="280dp"
                 android:layout_height="wrap_content" />
 
 

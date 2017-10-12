@@ -18,10 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".fund_detail" />
         <activity android:name=".ui.FundDetailActivity" />
-        <activity android:name=".ui.UpdateInvestment" />
-        <activity android:name=".ui.AddInvestmentActivity"></activity>
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".ui.UpdateInvestment" />
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".ui.AddInvestmentActivity"></activity>
     </application>
 
 </manifest>

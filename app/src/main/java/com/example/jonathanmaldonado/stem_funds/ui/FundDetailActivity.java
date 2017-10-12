@@ -106,9 +106,9 @@ public class FundDetailActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         // TODO Auto-generated method stub
-                                        investmentNameTV.setText("Name: "+StemResults.getInvestmentName().toString());
-                                        agencyTV.setText("Agency: "+StemResults.getAgency().toString());
-                                        subagencyTV.setText("SubAgency: "+StemResults.getSubagency());
+                                        investmentNameTV.setText(StemResults.getInvestmentName().toString());
+                                        agencyTV.setText(StemResults.getAgency().toString());
+                                        subagencyTV.setText(StemResults.getSubagency());
                                         descriptionTV.setText(StemResults.getBriefDescription());
 
                                     }
